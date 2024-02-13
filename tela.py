@@ -1,11 +1,11 @@
 from flet import *
-from typing import List
+from typing import List, Dict
 from requisicoes import Requisicoes
 
 class Cadastro(UserControl):
     def __init__(self, page: Page):
         self.page = page
-        
+        self.requisicoes = Requisicoes()
     
     def verifica_conteudo_tela(self):
         if len(self.container_informacoes.content.controls) > 0:
@@ -14,6 +14,15 @@ class Cadastro(UserControl):
     
     def verifica_campos(self, lista_valores: List):
         pass
+
+    def formatar_dados(self, lista: List) -> Dict:
+        dados_dict = {
+            'nome': lista[0].value,
+            'idade': lista[1].value,
+            'altura': lista[2].value,
+            'email': lista[3].value
+        }
+        return dados_dict
     
     def build(self):
 
@@ -21,35 +30,39 @@ class Cadastro(UserControl):
             lista_valores: List = self.container_adicionar_pessoa.content.controls.copy()
             lista_valores.pop(0)
             lista_valores.pop()
-            print(lista_valores)
-            for i in lista_valores:
-                print(i.value)
-        
+            dados_formatados = self.formatar_dados(lista_valores)
+            resposta = self.requisicoes.requisitar_adicionar_pessoa(dados_formatados)
+            print(resposta)
+
         def buscar_todas_pessoas(event):
-            requisicoes = Requisicoes()
-            resposta = requisicoes.requisitar_todas_pessoas()
+            resposta = self.requisicoes.requisitar_todas_pessoas()
             print(resposta)
 
         def buscar_pessoa_por_email(event):
             email_value: List = self.container_buscar_pessoa_por_email.content.controls.copy()
             email_value.pop(0)
             email_value.pop()
-            email = email_value[0].value
-            print(email)
+            email: str = email_value[0].value
+            respota = self.requisicoes.requisitar_pessoa_por_email(email)
+            print(respota)
         
         def alterar_dados(event):
-            email_value: List = self.container_alterar_dados.content.controls.copy()
-            email_value.pop(0)
-            email_value.pop()
-            email = email_value[0].value
-            print(email)
+            lista_valores: List = self.container_alterar_dados.content.controls.copy()
+            lista_valores.pop(0)
+            lista_valores.pop(1)
+            lista_valores.pop()
+            email: str = lista_valores.pop(0).value
+            dados_formatados = self.formatar_dados(lista_valores)
+            resposta = self.requisicoes.requisitar_alterar_dados(email, dados_formatados)
+            print(resposta)
         
         def excluir_pessoa(event):
             email_value: List = self.container_excluir_pessoa.content.controls.copy()
             email_value.pop(0)
             email_value.pop()
             email = email_value[0].value
-            print(email)
+            resposta = self.requisicoes.requisitar_deletar_pessoa(email)
+            print(resposta)
 
         def montar_tela(event):
             destino = event.data
@@ -128,7 +141,12 @@ class Cadastro(UserControl):
                 controls=[
                     Text("Alterar Dados da Pessoa", text_align=TextAlign.CENTER, size=30, weight=FontWeight.BOLD),
                     TextField(label="Email", hint_text="Digite o email aqui!"),
-                    ElevatedButton(content=Row([Text("Buscar", size=20)], alignment=MainAxisAlignment.CENTER), width=180, height=50, on_click=alterar_dados)
+                    Text("Novos Dados", text_align=TextAlign.CENTER, size=30, weight=FontWeight.BOLD),
+                    TextField(label="Nome", hint_text="Entre com o Nome aqui!"),
+                    TextField(label="Idade", hint_text="Entre com a Idade aqui!"),
+                    TextField(label="Altura", hint_text="Entre com a Altura aqui!"),
+                    TextField(label="Email", hint_text="Entre com o Email aqui!"),
+                    ElevatedButton(content=Row([Text("Alterar", size=20)], alignment=MainAxisAlignment.CENTER), width=180, height=50, on_click=alterar_dados)
                 ], alignment=MainAxisAlignment.CENTER, horizontal_alignment=CrossAxisAlignment.CENTER
             ), width=480
         )

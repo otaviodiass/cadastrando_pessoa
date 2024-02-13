@@ -1,5 +1,5 @@
 import requests
-from typing import List, Dict
+from typing import Dict
 
 class Requisicoes():
 
@@ -17,3 +17,22 @@ class Requisicoes():
         if resposta.status_code:
             dados = resposta.json()
             return dados
+
+    def requisitar_adicionar_pessoa(self, dados: Dict) -> None:
+        resposta = requests.post(self.URL + "pessoa", json=dados)
+        if resposta.status_code:
+            pessoa = resposta.json()
+            return pessoa
+    
+    def requisitar_alterar_dados(self, email: str, dados: Dict) -> None:
+        resposta = requests.put(self.URL + f"pessoa-altera/{email}", json=dados)
+        if resposta.status_code:
+            pessoa = resposta.json()
+            return pessoa
+    
+    # função para deletar pessoa
+    def requisitar_deletar_pessoa(self, email: str) -> None:
+        resposta = requests.delete(self.URL + f"pessoa-delete/{email}")
+        if resposta.status_code:
+            pessoa = resposta.json()
+            return pessoa
