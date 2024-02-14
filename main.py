@@ -38,17 +38,8 @@ def listar_pessoas():
 def buscar_por_email(email: str):
     for pessoa in PESSOAS:
         if pessoa['email'] == email:
-            return pessoa
-    return {'mensagem': 'pessoa não encontrada!'}
-
-
-# Busca uma Pessoa por id
-@app.get("/pessoa-id/{id}")
-def buscar_por_id(id: int):
-    for pessoa in PESSOAS:
-        if pessoa['id'] == id:
-            return pessoa
-    return {'mensagem': 'pessoa não encontrada!'}
+            return {'dados': pessoa, 'status': True}
+    return {'mensagem': 'Pessoa não encontrada!', 'status': False}
 
 
 # Adiciona uma Pessoa
@@ -70,8 +61,8 @@ def alterar_dados_pessoa(email: str, up_pessoa: Pessoa):
             pessoa['idade'] = up_pessoa.idade
             pessoa['altura'] = up_pessoa.altura
             pessoa['email'] = up_pessoa.email
-            return pessoa
-    return {'mensagem': 'pessoa não encontrada!'}
+            return {'dados': pessoa, 'status': True}
+    return {'mensagem': 'Pessoa não encontrada!', 'status': False}
 
 
 # Deletar uma Pessoa
@@ -80,5 +71,5 @@ def deletar_pessoa(email: str):
     for pessoa in PESSOAS:
         if pessoa['email'] == email:
             PESSOAS.remove(pessoa)
-            return {'mensagem': 'pessoa deletada!'}
-    return {'mensagem': 'pessoa não encontrada!'}
+            return {'mensagem': 'Pessoa deletada!', 'status': True}
+    return {'mensagem': 'Pessoa não encontrada!', 'status': False}
