@@ -1,75 +1,11 @@
 from fastapi import FastAPI
-from pessoa import Pessoa
+import rota.pessoa as pessoa
 
 app = FastAPI()
 
-
-PESSOAS = [
-    {
-        'nome': 'Jose',
-        'idade': 32,
-        'altura': 1.78,
-        'email': 'jose@email',
-        'id': 1
-    },
-    {
-        'nome': 'Pedro',
-        'idade': 44,
-        'altura': 1.80,
-        'email': 'pedro@email',
-        'id': 2
-    }
-]
+app.include_router(pessoa.router)
 
 
 @app.get("/")
 def read_root():
     return {'mensagem': 'ativo'}
-
-
-# Lista todas as Pessoas
-@app.get("/pessoa")
-def listar_pessoas():
-    return PESSOAS
-
-
-# Busca uma Pessoa por email
-@app.get("/pessoa/{email}")
-def buscar_por_email(email: str):
-    for pessoa in PESSOAS:
-        if pessoa['email'] == email:
-            return {'dados': pessoa, 'status': True}
-    return {'mensagem': 'Pessoa não encontrada!', 'status': False}
-
-
-# Adiciona uma Pessoa
-@app.post("/pessoa")
-def adicionar_pessoa(pessoa: Pessoa):
-    variavel = PESSOAS[-1]['id']
-    pessoa = pessoa.model_dump()
-    pessoa['id'] = variavel + 1
-    PESSOAS.append(pessoa)
-    return pessoa
-
-
-# Altera os dados de uma Pessoa
-@app.put("/pessoa-altera/{email}")
-def alterar_dados_pessoa(email: str, up_pessoa: Pessoa):
-    for pessoa in PESSOAS:
-        if pessoa['email'] == email:
-            pessoa['nome'] = up_pessoa.nome
-            pessoa['idade'] = up_pessoa.idade
-            pessoa['altura'] = up_pessoa.altura
-            pessoa['email'] = up_pessoa.email
-            return {'dados': pessoa, 'status': True}
-    return {'mensagem': 'Pessoa não encontrada!', 'status': False}
-
-
-# Deletar uma Pessoa
-@app.delete("/pessoa-delete/{email}")
-def deletar_pessoa(email: str):
-    for pessoa in PESSOAS:
-        if pessoa['email'] == email:
-            PESSOAS.remove(pessoa)
-            return {'mensagem': 'Pessoa deletada!', 'status': True}
-    return {'mensagem': 'Pessoa não encontrada!', 'status': False}

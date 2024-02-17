@@ -127,6 +127,7 @@ class Cadastro(UserControl):
             email: str = lista_valores.pop(0).value
             dados_formatados = self.formatar_dados(lista_valores)
             resposta = self.requisicoes.requisitar_alterar_dados(email, dados_formatados)
+            print(resposta)
             
             if resposta['status']:
                 tabela = DataTable(

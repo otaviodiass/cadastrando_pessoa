@@ -18,21 +18,21 @@ class Requisicoes():
             resp = resposta.json()
             return resp
 
-    def requisitar_adicionar_pessoa(self, dados: Dict) -> None:
+    def requisitar_adicionar_pessoa(self, dados: Dict) -> Dict:
         resposta = requests.post(self.URL + "pessoa", json=dados)
         if resposta.status_code:
             resp = resposta.json()
             return resp
     
-    def requisitar_alterar_dados(self, email: str, dados: Dict) -> None:
-        resposta = requests.put(self.URL + f"pessoa-altera/{email}", json=dados)
+    def requisitar_alterar_dados(self, email: str, dados: Dict) -> Dict:
+        resposta = requests.put(self.URL + f"pessoa/altera/{email}", json=dados)
         if resposta.status_code:
             resp = resposta.json()
             return resp
     
     # função para deletar pessoa
-    def requisitar_deletar_pessoa(self, email: str) -> None:
-        resposta = requests.delete(self.URL + f"pessoa-delete/{email}")
+    def requisitar_deletar_pessoa(self, email: str) -> Dict:
+        resposta = requests.delete(self.URL + f"pessoa/deleta/{email}")
         if resposta.status_code:
             resp = resposta.json()
             return resp
